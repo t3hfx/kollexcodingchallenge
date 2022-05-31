@@ -1,4 +1,4 @@
-import React, {FC, useRef} from 'react';
+import React, {FC, forwardRef} from 'react';
 import {
   StyleProp,
   StyleSheet,
@@ -18,31 +18,33 @@ type Props = TextInputProps & {
   error?: string;
 };
 
-export const Input: FC<Props> = ({containerStyle, error, ...props}) => {
-  const ref = useRef<TextInput>(null);
-  return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        ref?.current?.focus();
-      }}>
-      <View>
-        <View style={[styles.container, containerStyle]}>
-          <TextInput
-            ref={ref}
-            style={styles.input}
-            placeholderTextColor={gray200}
-            selectionColor={gray200}
-            keyboardAppearance={'dark'}
-            numberOfLines={1}
-            editable
-            {...props}
-          />
+export const Input: FC<Props> = forwardRef<TextInput, TextInputProps & Props>(
+  (props, ref) => {
+    const {containerStyle, error, ...restProps} = props;
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => {
+          if (ref != null && typeof ref !== 'function') ref?.current?.focus();
+        }}>
+        <View>
+          <View style={[styles.container, containerStyle]}>
+            <TextInput
+              ref={ref}
+              style={styles.input}
+              placeholderTextColor={gray200}
+              selectionColor={gray200}
+              keyboardAppearance={'dark'}
+              numberOfLines={1}
+              editable
+              {...restProps}
+            />
+          </View>
+          {!!error && <Text style={styles.error}>{error}</Text>}
         </View>
-        {!!error && <Text style={styles.error}>{error}</Text>}
-      </View>
-    </TouchableWithoutFeedback>
-  );
-};
+      </TouchableWithoutFeedback>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

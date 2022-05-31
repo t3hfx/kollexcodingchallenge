@@ -1,6 +1,13 @@
 import {useFormik} from 'formik';
-import React, {FC, useMemo} from 'react';
-import {Keyboard, ReturnKeyType, StyleSheet, Text, View} from 'react-native';
+import React, {FC, useMemo, useRef} from 'react';
+import {
+  Keyboard,
+  ReturnKeyType,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {Background} from '@/components/Background';
@@ -22,6 +29,8 @@ const initialValues = {
 };
 
 export const SignIn: FC = () => {
+  const usernameInputRef = useRef<TextInput>(null);
+  const passwordInputRef = useRef<TextInput>(null);
   const formik = useFormik<State>({
     initialValues,
     initialStatus: false,
@@ -29,40 +38,39 @@ export const SignIn: FC = () => {
     validate: validateUsernameAndPassword,
     onSubmit: async (value, {setStatus}) => {
       Keyboard.dismiss();
-      // setFirebaseError(undefined);
       setStatus(true);
-      // try {
-      //   await auth().sendPasswordResetEmail(value.email);
-      // } catch (e) {
-      //   const error = e as Error;
-      //   setFirebaseError(error.message);
-      //   if (!error.message.includes('user-not-found') && !error.message.includes('invalid-email')) {
-      //     Bugsnag.notify({
-      //       name: 'Password reset error',
-      //       message: error.message,
-      //     });
-      //   }
-      //   return;
-      // } finally {
-      //   setStatus(false);
-      // }
+      try {
+        console.log('Try it');
+      } catch (e) {
+        const error = e as Error;
+        console.log('Error ', error);
+        return;
+      } finally {
+        setStatus(false);
+      }
       // navigation.navigate(Screens.LinkSent);
     },
   });
 
+  const focusNext = () => {
+    passwordInputRef.current?.focus();
+  };
+
   const emailInputProps = useMemo(() => {
     return {
+      ref: usernameInputRef,
       onChangeText: formik.handleChange('username'),
       value: formik.values.username,
       error: formik.errors.username,
       returnKeyType: 'next' as ReturnKeyType,
+      onSubmitEditing: focusNext,
       placeholder: 'Username',
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formik.values, formik.errors]);
+  }, [formik]);
 
   const passwordInputProps = useMemo(() => {
     return {
+      ref: passwordInputRef,
       onChangeText: formik.handleChange('password'),
       value: formik.values.password,
       error: formik.errors.password,
@@ -71,8 +79,7 @@ export const SignIn: FC = () => {
       placeholder: 'Password',
       secureTextEntry: true,
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formik.values, formik.errors]);
+  }, [formik]);
 
   return (
     <Background style={styles.container}>
