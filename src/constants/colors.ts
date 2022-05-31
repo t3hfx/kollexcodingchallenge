@@ -3,6 +3,7 @@ export const white = '#fff';
 export const purple100 = '#a81379';
 export const purple200 = '#35107a';
 export const purple300 = '#3a007d';
+export const purple400 = '#7749b3';
 export const gray100 = '#ebe8e8';
 export const gray200 = '#858585';
 export const gray300 = '#757575';

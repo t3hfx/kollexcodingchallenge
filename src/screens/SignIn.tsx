@@ -1,11 +1,12 @@
 import {useFormik} from 'formik';
 import React, {FC, useMemo} from 'react';
-import {Keyboard, ReturnKeyType, StyleSheet, Text} from 'react-native';
+import {Keyboard, ReturnKeyType, StyleSheet, Text, View} from 'react-native';
 
 import {Background} from '@/components/Background';
+import {Button} from '@/components/Button';
 import {Form} from '@/components/Form';
 import {Input} from '@/components/Input';
-import {purple300} from '@/constants/colors';
+import {purple300, purple400} from '@/constants/colors';
 import {font} from '@/constants/style';
 import {validateUsernameAndPassword} from '@/utils/auth';
 
@@ -78,6 +79,11 @@ export const SignIn: FC = () => {
         <Text style={styles.loginText}>Login</Text>
         <Input containerStyle={styles.usernameInput} {...emailInputProps} />
         <Input containerStyle={styles.passwordInput} {...passwordInputProps} />
+        <Button style={styles.loginButton} title={'Login'} />
+        <View style={styles.bottomButtonsContainer}>
+          <Text style={styles.bottomButton}>Sign up</Text>
+          <Text style={styles.bottomButton}>Forgot password?</Text>
+        </View>
       </Form>
     </Background>
   );
@@ -102,5 +108,17 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     marginTop: 10,
+  },
+  loginButton: {
+    marginTop: 20,
+  },
+  bottomButtonsContainer: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  bottomButton: {
+    ...font(16),
+    color: purple400,
   },
 });
