@@ -1,19 +1,34 @@
 import React, {FC} from 'react';
-import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {
+  ActivityIndicator,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  ViewStyle,
+} from 'react-native';
 
-import {purple200, white} from '@/constants/colors';
+import {gray100, purple200, white} from '@/constants/colors';
 import {font} from '@/constants/style';
 
-type Props = {
+type Props = TouchableOpacityProps & {
   style?: StyleProp<ViewStyle>;
   title: string;
+  loading?: boolean;
 };
 
-export const Button: FC<Props> = ({style, title}) => {
+export const Button: FC<Props> = ({style, title, loading, ...props}) => {
   return (
-    <View style={[styles.container, style]}>
-      <Text style={styles.title}>{title}</Text>
-    </View>
+    <TouchableOpacity
+      style={[styles.container, loading && styles.loadingButton, style]}
+      {...props}>
+      {!loading ? (
+        <Text style={styles.title}>{title}</Text>
+      ) : (
+        <ActivityIndicator />
+      )}
+    </TouchableOpacity>
   );
 };
 
@@ -24,6 +39,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     paddingVertical: 12,
+  },
+  loadingButton: {
+    backgroundColor: gray100,
   },
   title: {
     ...font(16),

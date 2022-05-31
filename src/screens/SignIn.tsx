@@ -1,5 +1,5 @@
 import {useFormik} from 'formik';
-import React, {FC, useMemo, useRef} from 'react';
+import React, {FC, useMemo, useRef, useState} from 'react';
 import {
   Keyboard,
   ReturnKeyType,
@@ -10,12 +10,14 @@ import {
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
+import {login} from '@/api/api';
 import {Background} from '@/components/Background';
 import {Button} from '@/components/Button';
 import {Form} from '@/components/Form';
 import {Input} from '@/components/Input';
-import {purple300, purple400} from '@/constants/colors';
+import {purple300, purple400, red100} from '@/constants/colors';
 import {font} from '@/constants/style';
+import {ApiError} from '@/types/api';
 import {validateUsernameAndPassword} from '@/utils/auth';
 
 type State = {
@@ -31,6 +33,7 @@ const initialValues = {
 export const SignIn: FC = () => {
   const usernameInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
+  const [apiError, setApiError] = useState<string>();
   const formik = useFormik<State>({
     initialValues,
     initialStatus: false,
@@ -38,12 +41,14 @@ export const SignIn: FC = () => {
     validate: validateUsernameAndPassword,
     onSubmit: async (value, {setStatus}) => {
       Keyboard.dismiss();
+      setApiError(undefined);
       setStatus(true);
       try {
-        console.log('Try it');
+        await login(value.username, value.password);
+        console.log('success');
       } catch (e) {
-        const error = e as Error;
-        console.log('Error ', error);
+        const error = e as ApiError;
+        setApiError(error.error.message);
         return;
       } finally {
         setStatus(false);
@@ -93,10 +98,22 @@ export const SignIn: FC = () => {
             containerStyle={styles.passwordInput}
             {...passwordInputProps}
           />
-          <Button style={styles.loginButton} title={'Login'} />
+          {apiError && (
+            <View style={styles.errorView}>
+              <Text style={styles.errorText}>{apiError}</Text>
+            </View>
+          )}
+
+          <Button
+            style={styles.loginButton}
+            title={'Login'}
+            onPress={formik.handleSubmit}
+            disabled={formik.status}
+            loading={formik.status}
+          />
           <View style={styles.bottomButtonsContainer}>
-            <Text style={styles.bottomButton}>Sign up</Text>
-            <Text style={styles.bottomButton}>Forgot password?</Text>
+            <Text style={styles.bottomButton}>Signup</Text>
+            <Text style={styles.bottomButton}>Forgot Password?</Text>
           </View>
         </Form>
       </KeyboardAwareScrollView>
@@ -114,7 +131,7 @@ const styles = StyleSheet.create({
   },
   form: {
     paddingHorizontal: 40,
-    height: 400,
+    minHeight: 400,
   },
   loginText: {
     color: purple300,
@@ -130,6 +147,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: 20,
+    height: 45,
   },
   bottomButtonsContainer: {
     marginTop: 20,
@@ -139,5 +157,18 @@ const styles = StyleSheet.create({
   bottomButton: {
     ...font(16),
     color: purple400,
+  },
+  errorView: {
+    marginTop: 20,
+    borderColor: red100,
+    borderWidth: 2,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  errorText: {
+    ...font(16),
+    color: red100,
   },
 });
