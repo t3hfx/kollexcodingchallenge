@@ -7,16 +7,14 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 };
 
-export const Form: FC<Props> = ({children}) => {
-  return <View style={styles.container}>{children}</View>;
+export const Form: FC<Props> = ({style, children}) => {
+  return <View style={[styles.container, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: white,
     marginHorizontal: 20,
     borderRadius: 20,
-    justifyContent: 'center',
   },
 });
