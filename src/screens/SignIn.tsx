@@ -1,6 +1,7 @@
 import {useFormik} from 'formik';
 import React, {FC, useMemo} from 'react';
 import {Keyboard, ReturnKeyType, StyleSheet, Text, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {Background} from '@/components/Background';
 import {Button} from '@/components/Button';
@@ -75,22 +76,33 @@ export const SignIn: FC = () => {
 
   return (
     <Background style={styles.container}>
-      <Form style={styles.form}>
-        <Text style={styles.loginText}>Login</Text>
-        <Input containerStyle={styles.usernameInput} {...emailInputProps} />
-        <Input containerStyle={styles.passwordInput} {...passwordInputProps} />
-        <Button style={styles.loginButton} title={'Login'} />
-        <View style={styles.bottomButtonsContainer}>
-          <Text style={styles.bottomButton}>Sign up</Text>
-          <Text style={styles.bottomButton}>Forgot password?</Text>
-        </View>
-      </Form>
+      <KeyboardAwareScrollView
+        keyboardDismissMode="on-drag"
+        contentContainerStyle={styles.scrollContainer}>
+        <Form style={styles.form}>
+          <Text style={styles.loginText}>Login</Text>
+          <Input containerStyle={styles.usernameInput} {...emailInputProps} />
+          <Input
+            containerStyle={styles.passwordInput}
+            {...passwordInputProps}
+          />
+          <Button style={styles.loginButton} title={'Login'} />
+          <View style={styles.bottomButtonsContainer}>
+            <Text style={styles.bottomButton}>Sign up</Text>
+            <Text style={styles.bottomButton}>Forgot password?</Text>
+          </View>
+        </Form>
+      </KeyboardAwareScrollView>
     </Background>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    justifyContent: 'center',
+  },
+  scrollContainer: {
+    flex: 1,
     justifyContent: 'center',
   },
   form: {
