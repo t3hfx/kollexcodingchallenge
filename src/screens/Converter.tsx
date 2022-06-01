@@ -43,14 +43,16 @@ export const Converter: FC = () => {
   const opacity = useRef(new Animated.Value(0)).current;
   const [fadedIn, setFadedIn] = useState(false);
 
+  //fake historical data changing on results
   const points: Point[] = useMemo(() => {
     return Array<number>(8)
       .fill(0)
-      .map((_, index) => ({
-        date: new Date(index),
+      .map(_ => ({
+        date: new Date(),
         value: Math.random(),
       }));
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversionData]);
 
   const fade = (fadingIn: boolean) => {
     Animated.timing(opacity, {
@@ -155,7 +157,7 @@ export const Converter: FC = () => {
           disabled={formik.status}
           loading={formik.status}
         />
-        <View>
+        <Animated.View style={{opacity}}>
           <LineGraph
             style={styles.graph}
             animated
@@ -163,13 +165,15 @@ export const Converter: FC = () => {
             points={points}
           />
           <View style={styles.datesContainer}>
-            {points.map((i, index) => (
-              <Text key={index} style={styles.date}>
-                {String(i.date.getFullYear())}
-              </Text>
-            ))}
+            {points
+              .map((i, index) => (
+                <Text key={index} style={styles.date}>
+                  {String(i.date.getFullYear() - index)}
+                </Text>
+              ))
+              .reverse()}
           </View>
-        </View>
+        </Animated.View>
       </Form>
     </Background>
   );
