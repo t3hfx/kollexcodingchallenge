@@ -1,12 +1,11 @@
 import React, {FC, forwardRef} from 'react';
 import {
+  Pressable,
   StyleProp,
   StyleSheet,
   Text,
   TextInput,
   TextInputProps,
-  TouchableWithoutFeedback,
-  View,
   ViewStyle,
 } from 'react-native';
 
@@ -22,26 +21,23 @@ export const Input: FC<Props> = forwardRef<TextInput, TextInputProps & Props>(
   (props, ref) => {
     const {containerStyle, error, ...restProps} = props;
     return (
-      <TouchableWithoutFeedback
+      <Pressable
         onPress={() => {
           if (ref != null && typeof ref !== 'function') ref?.current?.focus();
-        }}>
-        <View>
-          <View style={[styles.container, containerStyle]}>
-            <TextInput
-              ref={ref}
-              style={styles.input}
-              placeholderTextColor={gray200}
-              selectionColor={gray200}
-              keyboardAppearance={'dark'}
-              numberOfLines={1}
-              editable
-              {...restProps}
-            />
-          </View>
-          {!!error && <Text style={styles.error}>{error}</Text>}
-        </View>
-      </TouchableWithoutFeedback>
+        }}
+        style={[styles.container, containerStyle]}>
+        <TextInput
+          ref={ref}
+          style={[styles.input, restProps.style]}
+          placeholderTextColor={gray200}
+          selectionColor={gray200}
+          keyboardAppearance={'dark'}
+          numberOfLines={1}
+          editable
+          {...restProps}
+        />
+        {!!error && <Text style={styles.error}>{error}</Text>}
+      </Pressable>
     );
   },
 );

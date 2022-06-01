@@ -1,3 +1,4 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFormik} from 'formik';
 import React, {FC, useMemo, useRef, useState} from 'react';
 import {
@@ -17,8 +18,14 @@ import {Form} from '@/components/Form';
 import {Input} from '@/components/Input';
 import {purple300, purple400, red100} from '@/constants/colors';
 import {font} from '@/constants/style';
+import {RootContainerStackParamList, Screens} from '@/navigation/constants';
 import {ApiError} from '@/types/api';
 import {validateUsernameAndPassword} from '@/utils/auth';
+
+type Props = NativeStackScreenProps<
+  RootContainerStackParamList,
+  Screens.SignIn
+>;
 
 type State = {
   username: string;
@@ -30,7 +37,7 @@ const initialValues = {
   password: '',
 };
 
-export const SignIn: FC = () => {
+export const SignIn: FC<Props> = ({navigation}) => {
   const usernameInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const [apiError, setApiError] = useState<string>();
@@ -45,7 +52,6 @@ export const SignIn: FC = () => {
       setStatus(true);
       try {
         await login(value.username, value.password);
-        console.log('success');
       } catch (e) {
         const error = e as ApiError;
         setApiError(error.error.message);
@@ -53,7 +59,7 @@ export const SignIn: FC = () => {
       } finally {
         setStatus(false);
       }
-      // navigation.navigate(Screens.LinkSent);
+      navigation.navigate(Screens.Converter);
     },
   });
 
