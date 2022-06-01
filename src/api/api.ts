@@ -1,3 +1,4 @@
+import {API_KEY, BASE_URL} from '@/constants/api';
 import {Database} from '@/types/api';
 
 const db: Database = {
@@ -19,4 +20,16 @@ export const login = async (username: string, password: string) => {
       else reject({error: {message: 'Login credentials are wrong.'}});
     }, 300);
   });
+};
+
+const currencyRequestOptions = {
+  method: 'GET',
+};
+
+export const fetchCurrencyResults = async (from: string, to: string) => {
+  const result = await fetch(
+    `${BASE_URL}/${API_KEY}/pair/${from}/${to}`,
+    currencyRequestOptions,
+  );
+  return result.json();
 };

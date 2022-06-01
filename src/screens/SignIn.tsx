@@ -1,6 +1,7 @@
+import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFormik} from 'formik';
-import React, {FC, useMemo, useRef, useState} from 'react';
+import React, {FC, useCallback, useMemo, useRef, useState} from 'react';
 import {
   Keyboard,
   ReturnKeyType,
@@ -37,10 +38,11 @@ const initialValues = {
   password: '',
 };
 
-export const SignIn: FC<Props> = ({navigation}) => {
+export const SignIn: FC<Props> = ({navigation, route}) => {
   const usernameInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const [apiError, setApiError] = useState<string>();
+  const back = route?.params?.back;
   const formik = useFormik<State>({
     initialValues,
     initialStatus: false,
@@ -91,6 +93,13 @@ export const SignIn: FC<Props> = ({navigation}) => {
       secureTextEntry: true,
     };
   }, [formik]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (back) return () => formik.resetForm();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [back]),
+  );
 
   return (
     <Background style={styles.container}>

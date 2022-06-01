@@ -1,4 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {FC, useRef} from 'react';
 import {
   Animated,
@@ -11,6 +12,7 @@ import {
 
 import {red100, white} from '@/constants/colors';
 import {font} from '@/constants/style';
+import {RootContainerStackParamList, Screens} from '@/navigation/constants';
 
 import {AnimatedPressable} from './Animated';
 
@@ -20,7 +22,8 @@ type Props = {
 };
 
 export const Form: FC<Props> = ({style, closeButton, children}) => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootContainerStackParamList>>();
   const scale = useRef(closeButton ? new Animated.Value(1) : null).current;
 
   const onPress = (pressedIn: boolean) => {
@@ -29,7 +32,7 @@ export const Form: FC<Props> = ({style, closeButton, children}) => {
       useNativeDriver: true,
       duration: 100,
     }).start();
-    if (!pressedIn) navigation.goBack();
+    if (!pressedIn) navigation.navigate(Screens.SignIn, {back: true});
   };
 
   const animatedStyle = closeButton && {

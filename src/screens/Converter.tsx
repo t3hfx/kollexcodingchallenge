@@ -1,6 +1,9 @@
 import {useFormik} from 'formik';
-import React, {FC, useMemo, useRef} from 'react';
+import React, {FC, useMemo, useRef, useState} from 'react';
 import {
+  Alert,
+  Animated,
+  Keyboard,
   ReturnKeyType,
   StyleSheet,
   Text,
@@ -10,13 +13,16 @@ import {
 } from 'react-native';
 import {LineGraph} from 'react-native-graph';
 
+import {fetchCurrencyResults} from '@/api/api';
 import {Background} from '@/components/Background';
 import {Button} from '@/components/Button';
 import {Form} from '@/components/Form';
 import {Input} from '@/components/Input';
 import {black, gray200, purple300} from '@/constants/colors';
 import {font} from '@/constants/style';
+import {ConversionApiError, ConversionRate} from '@/types/api';
 import {Point} from '@/types/converter';
+import {validateCurrencies} from '@/utils/converter';
 
 type State = {
   firstCurrency: string;
@@ -29,38 +35,59 @@ const initialValues = {
 };
 
 export const Converter: FC = () => {
-  const currency1 = 'dhs';
-  const currency2Value = '17';
-  const currency2 = 'Indian rupee';
-
   const firstCurrencyInputRef = useRef<TextInput>(null);
   const secondCurrencyInputRef = useRef<TextInput>(null);
 
-  const points: Point[] = Array<number>(8)
-    .fill(0)
-    .map((_, index) => ({
-      date: new Date(index),
-      value: Math.random(),
-    }));
+  const [conversionData, setConversionData] = useState<ConversionRate>();
+
+  const opacity = useRef(new Animated.Value(0)).current;
+  const [fadedIn, setFadedIn] = useState(false);
+
+  const points: Point[] = useMemo(() => {
+    return Array<number>(8)
+      .fill(0)
+      .map((_, index) => ({
+        date: new Date(index),
+        value: Math.random(),
+      }));
+  }, []);
+
+  const fade = (fadingIn: boolean) => {
+    Animated.timing(opacity, {
+      toValue: fadingIn ? 1 : 0,
+      useNativeDriver: true,
+      duration: 100,
+    }).start(() => setFadedIn(fadingIn));
+  };
 
   const formik = useFormik<State>({
     initialValues,
     initialStatus: false,
-    validateOnChange: false,
+    validateOnChange: true,
+    validate: values =>
+      validateCurrencies(
+        values.firstCurrency,
+        values.secondCurrency,
+        fadedIn,
+        fade,
+      ),
     onSubmit: async (value, {setStatus}) => {
-      // Keyboard.dismiss();
-      // setApiError(undefined);
-      // setStatus(true);
-      // try {
-      //   await login(value.username, value.password);
-      // } catch (e) {
-      //   const error = e as ApiError;
-      //   setApiError(error.error.message);
-      //   return;
-      // } finally {
-      //   setStatus(false);
-      // }
-      // navigation.navigate(Screens.Converter);
+      Keyboard.dismiss();
+      setStatus(true);
+      try {
+        const result = await fetchCurrencyResults(
+          value.firstCurrency,
+          value.secondCurrency,
+        );
+        setConversionData(result);
+        fade(true);
+      } catch (e) {
+        const error = e as ConversionApiError;
+        Alert.alert(error.result, error['error-type']);
+        return;
+      } finally {
+        setStatus(false);
+      }
     },
   });
 
@@ -73,7 +100,6 @@ export const Converter: FC = () => {
       ref: firstCurrencyInputRef,
       onChangeText: formik.handleChange('firstCurrency'),
       value: formik.values.firstCurrency,
-      error: formik.errors.firstCurrency,
       returnKeyType: 'next' as ReturnKeyType,
       onSubmitEditing: focusNext,
       placeholder: 'AER',
@@ -87,7 +113,6 @@ export const Converter: FC = () => {
       ref: secondCurrencyInputRef,
       onChangeText: formik.handleChange('secondCurrency'),
       value: formik.values.secondCurrency,
-      error: formik.errors.secondCurrency,
       returnKeyType: 'done' as ReturnKeyType,
       onSubmitEditing: formik.handleSubmit,
       placeholder: 'INR',
@@ -100,9 +125,18 @@ export const Converter: FC = () => {
     <Background style={styles.container}>
       <Form style={styles.form} closeButton>
         <Text style={styles.header}>Currency converter</Text>
-        <Text style={styles.currency1text}>{`1 ${currency1} equals`}</Text>
-        <Text
-          style={styles.currency2text}>{`${currency2Value} ${currency2}`}</Text>
+        <Animated.View style={{opacity}}>
+          <Text
+            style={
+              styles.currency1text
+            }>{`1 ${formik.values.firstCurrency} equals`}</Text>
+          <Text style={styles.currency2text}>
+            {conversionData?.conversion_rate
+              ? `${conversionData?.conversion_rate} ${formik.values.secondCurrency}`
+              : 'No data'}
+          </Text>
+        </Animated.View>
+
         <View style={styles.inputsContainer}>
           <Input
             containerStyle={styles.inputContainer}
@@ -129,8 +163,10 @@ export const Converter: FC = () => {
             points={points}
           />
           <View style={styles.datesContainer}>
-            {points.map((i, _) => (
-              <Text style={styles.date}>{String(i.date.getFullYear())}</Text>
+            {points.map((i, index) => (
+              <Text key={index} style={styles.date}>
+                {String(i.date.getFullYear())}
+              </Text>
             ))}
           </View>
         </View>
