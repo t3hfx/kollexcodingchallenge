@@ -28,7 +28,7 @@ const currencyRequestOptions = {
 
 export const fetchCurrencyResults = async (from: string, to: string) => {
   const result = await fetch(
-    `${BASE_URL}/${API_KEY}/pair/${from}/${to}`,
+    `${BASE_URL}/${API_KEY}/pair/${to}/${from}`,
     currencyRequestOptions,
   );
   return result.json();
