@@ -18,7 +18,7 @@ export const validateUsername = (username: string) => {
   if (username.length > 20) return 'Username maximum length is 20';
 };
 
-const validatePassword = (password: string) => {
+export const validatePassword = (password: string) => {
   if (!passwordRegex.test(password))
     return 'Password value has minimum 8 and maximum 20 character limit and must have at least 1 uppercase, 1 lowercase and 1 special character';
 };
