@@ -13,7 +13,7 @@ export const validateUsernameAndPassword = (value: {
   }
 };
 
-const validateUsername = (username: string) => {
+export const validateUsername = (username: string) => {
   if (username.length < 5) return 'Username should be at least 5 symbols';
   if (username.length > 20) return 'Username maximum length is 20';
 };

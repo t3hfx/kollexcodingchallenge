@@ -1359,7 +1359,7 @@
   dependencies:
     nanoid "^3.1.23"
 
-"@shopify/react-native-skia@^0.1.130":
+"@shopify/react-native-skia@0.1.130":
   version "0.1.130"
   resolved "https://registry.yarnpkg.com/@shopify/react-native-skia/-/react-native-skia-0.1.130.tgz#a3db74db128f6c521d189397ba93afea2216f994"
   integrity sha512-g/A3TtDdy3Fo17okrKLbQKbbFt4StodEYtwqnvrLiu5RU5MjHNWXGZR7QTQSxrggQsUUOSxX3ZRxzf/pt2g9EQ==
@@ -6216,7 +6216,7 @@ react-native-codegen@^0.0.17:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
-react-native-gesture-handler@^2.4.2:
+react-native-gesture-handler@2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.4.2.tgz#de93760b0bc251d94e8ae692f9850ec3ed2e4f27"
   integrity sha512-K3oMiQV7NOVB5RvNlxkyJxU1Gn6m1cYu53MoFA542FVDSTR491d1eQkWDdqy4lW52rfF7IK7eE1LCi+kTJx7jw==
@@ -6232,7 +6232,7 @@ react-native-gradle-plugin@^0.0.6:
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.0.6.tgz#b61a9234ad2f61430937911003cddd7e15c72b45"
   integrity sha512-eIlgtsmDp1jLC24dRn43hB3kEcZVqx6DUQbR0N1ABXGnMEafm9I3V3dUUeD1vh+Dy5WqijSoEwLNUPLgu5zDMg==
 
-react-native-graph@^0.1.1:
+react-native-graph@0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/react-native-graph/-/react-native-graph-0.1.1.tgz#093563ae0d52bd5401c80f5c0a41ecccef1fcecf"
   integrity sha512-GAoqxm2znM9UFVuJaJ6urTIC33SJF0CNogpwG/qVd8x2HRlnEKAJqQE2wYKdhjBdmjltLWah+bNxGX0T2SdKrA==
