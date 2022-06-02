@@ -1,7 +1,7 @@
 import {API_KEY, BASE_URL} from '@/constants/api';
 import {Database} from '@/types/api';
 
-const db: Database = {
+export const db: Database = {
   users: [
     {
       username: 'JohnyDepp',
