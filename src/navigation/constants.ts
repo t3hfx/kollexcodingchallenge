@@ -4,6 +4,6 @@ export enum Screens {
 }
 
 export type RootContainerStackParamList = {
-  [Screens.SignIn]: undefined;
+  [Screens.SignIn]: {back: boolean} | undefined;
   [Screens.Converter]: undefined;
 };
